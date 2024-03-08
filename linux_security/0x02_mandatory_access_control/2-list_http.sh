@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo semanage port -l | grep http
+semanage port -l | grep http
