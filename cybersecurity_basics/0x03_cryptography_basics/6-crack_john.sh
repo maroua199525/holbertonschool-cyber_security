@@ -1,2 +1,2 @@
 #!/bin/bash
-john --wordlist=rockyou --format=sha256 $1
+john --wordlist=rockyou --format=sha256 "$1"
