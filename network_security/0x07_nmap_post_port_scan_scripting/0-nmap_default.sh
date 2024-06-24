@@ -1,2 +1,2 @@
 #!/bin/bash
-nmap -sV --script=default
+nmap --script default $1
