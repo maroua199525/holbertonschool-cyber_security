@@ -35,9 +35,8 @@ def main():
                 parts = line.split()
                 start = int(parts[0].split('-')[0], 16)
                 end = int(parts[0].split('-')[1], 16)
-                permissions = parts[1]
 
-                if 'heap' in line and 'rw-p' in permissions:
+                if 'heap' in line:
                     with open(mem_path, 'r+b') as mem_file:
                         mem_file.seek(start)
                         data = mem_file.read(end - start)
