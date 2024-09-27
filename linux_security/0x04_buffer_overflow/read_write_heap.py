@@ -1,53 +1,59 @@
+
 #!/usr/bin/python3
-""" a script that finds a str2 in the heap
-    of a running process, and replaces it"""
 
-from sys import argv
+"""Documentation :
+Module docs.
+"""
 
+import sys
+import os
 
-def init():
+def usage():
+    """Documentation :
+    usage function docs.
     """
-    Init
+    print("Usage: read_write_heap.py pid search_string replace_string")
+    sys.exit(1)
+
+def main():
+    """Documentation :
+    main function docs.
     """
-    if len(argv) != 4:
-        print('Usage: read_write_heap.py pid search_string replace_string')
-        exit(1)
-    pid = argv[1]
-    search_string = argv[2]
-    replace_string = argv[3]
+    if len(sys.argv) != 4:
+        usage()
+
+    pid = int(sys.argv[1])
+    search_string = sys.argv[2].encode()
+    replace_string = sys.argv[3].encode()
+
+    mem_path = f"/proc/{pid}/mem"
+    maps_path = f"/proc/{pid}/maps"
 
     try:
-        maps_file = open('/proc/{}/maps'.format(pid), 'r')
+        with open(maps_path, 'r') as maps_file:
+            for line in maps_file:
+                parts = line.split()
+                start = int(parts[0].split('-')[0], 16)
+                end = int(parts[0].split('-')[1], 16)
+                permissions = parts[1]
+
+                if 'heap' in line and 'rw-p' in permissions:
+                    with open(mem_path, 'r+b') as mem_file:
+                        mem_file.seek(start)
+                        data = mem_file.read(end - start)
+
+                        index = data.find(search_string)
+                        if index != -1:
+                            new_data = data[:index] + replace_string + data[index + len(search_string):]
+                            mem_file.seek(start)
+                            mem_file.write(new_data)
+                            print(f"Replaced '{search_string.decode()}' with '{replace_string.decode()}'")
+                            sys.exit(0)
+
+        print("Error: String not found in heap")
     except Exception as e:
-        print(e)
-        exit(1)
+        print(f"Error: {e}")
+        sys.exit(1)
 
-    try:
-        mem_file = open('/proc/{}/mem'.format(pid), 'r+b', 0)
-    except Exception as e:
-        maps_file.close()
-        print(e)
-        exit(1)
-
-    for line in maps_file.readlines():
-        line_split = line.split()
-        if '[heap]' in line_split:
-            mem = line_split[0].split('-')
-            mem_start = int(mem[0], 16)
-            mem_end = int(mem[1], 16)
-            mem_file.seek(mem_start)
-            string_space = mem_file.read(mem_end - mem_start)
-            string_position = string_space.find(str.encode(search_string))
-
-            if string_position == -1:
-                break
-
-            mem_file.seek(mem_start + string_position)
-            mem_file.write(str.encode(replace_string) + b'\x00')
-            break
-
-    mem_file.close()
-    maps_file.close()
-
-if __name__ == '__main__':
-    init()
+if __name__ == "__main__":
+    main()
