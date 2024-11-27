@@ -1,0 +1,14 @@
+# Nmap 7.80 scan initiated Tue Nov 26 16:52:26 2024 as: nmap -oN vuln_scan_results.txt --script http-vuln-cve2017-5638 www.google.com
+Nmap scan report for www.google.com (142.250.201.4)
+Host is up (0.013s latency).
+Other addresses for www.google.com (not scanned): 2a00:1450:4006:809::2004
+rDNS record for 142.250.201.4: mrs08s19-in-f4.1e100.net
+Not shown: 995 filtered ports
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+443/tcp  open   https
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+
+# Nmap done at Tue Nov 26 16:52:31 2024 -- 1 IP address (1 host up) scanned in 5.48 seconds
