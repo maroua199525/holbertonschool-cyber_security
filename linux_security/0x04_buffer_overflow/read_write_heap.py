@@ -1,69 +1,62 @@
 #!/usr/bin/python3
+
+
+"""Documentation :
+Module docs.
 """
-This file looks for a process by it's pid and replace a value
-in the heap of this process
-"""
 
-from sys import argv
+import sys
+import os
 
 
-def init():
-    """This is the main function"""
-    if len(argv) < 3:
-        print("Not enough args :(")
-        exit(1)
-    pid = argv[1]
-    target_string = argv[2]
-    replace_string = ""
-    if len(argv) == 4:
-        replace_string = argv[3]
+def usage():
+    """Documentation :
+    usage function docs.
+    """
+    print("Usage: read_write_heap.py pid search_string replace_string")
+    sys.exit(1)
 
-    # try to open the files
+
+def main():
+    """Documentation :
+    main function docs.
+    """
+    if len(sys.argv) != 4:
+        usage()
+
+    pid = int(sys.argv[1])
+    search_string = sys.argv[2].encode()
+    replace_string = sys.argv[3].encode()
+
+    mem_path = f"/proc/{pid}/mem"
+    maps_path = f"/proc/{pid}/maps"
+
     try:
-        maps_file = open("/proc/{}/maps".format(pid), 'r')
-        # open with binary mode
-        mem_file = open("/proc/{}/mem".format(pid), 'r+b', 0)
+        with open(maps_path, 'r') as maps_file:
+            for line in maps_file.readlines():
+                parts = line.split()
+                start = int(parts[0].split('-')[0], 16)
+                end = int(parts[0].split('-')[1], 16)
+                permissions = parts[1]
+
+                if 'heap' in line and 'rw-p' in permissions:
+                    with open(mem_path, 'r+b') as mem_file:
+                        mem_file.seek(start)
+                        data = mem_file.read(end - start)
+
+                        index = data.find(search_string)
+                        if index != -1:
+                            new_1 = data[:index] + replace_string
+                            new_2 = data[index + len(search_string):]
+                            new_data = new_1 + new_2
+                            mem_file.seek(start)
+                            mem_file.write(new_data)
+                            sys.exit(0)
+        print("Error: String not found in heap")
     except Exception as e:
-        # problems :(
-        # probably not found or permissions denied
-        print(e)
-        maps_file.close()
-        mem_file.close()
-        exit(1)
-
-    # read the maps file line by line
-    for line in maps_file.readlines():
-        line_splitted = line.split()
-
-        # once the line that descrive the heap is found
-        if '[heap]' in line_splitted:
-            # extract the address range
-            mem_positions = line_splitted[0].split('-')
-            start_position = int(mem_positions[0], 16)
-            end_position = int(mem_positions[1], 16)
-
-            # move to the start position and read the values
-            mem_file.seek(start_position)
-            string_read = mem_file.read(end_position - start_position)
-
-            # find the position of the target_string
-            # this gives us a number where the string is
-            lookup_position = string_read.find(str.encode(target_string))
-
-            # if there's no target_string found, break the loop
-            # usually when values is equals to -1
-            if lookup_position < 0:
-                break
-            else:
-                # move to the target_string and write the new value
-                mem_file.seek(start_position + lookup_position)
-                mem_file.write(str.encode(replace_string) + b'\x00')
-            break
-
-    # never forget to close openned files at the end
-    maps_file.close()
-    mem_file.close()
+        print(f"Error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    init()
+    main()
