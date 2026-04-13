@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# MITRE ATT&CK Technique: T1087.001 - Local Account Discovery
 TECHNIQUE_ID="T1087.001"
 TECHNIQUE_NAME="Local Account Discovery"
 RESULTS_FILE="atomic_results.txt"
