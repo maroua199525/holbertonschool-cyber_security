@@ -13,7 +13,7 @@ if [ -f "$STOP_FLAG" ]; then
 fi
 
 # Print technique info
-echo "[*] MITRE ATT&CK Technique: $TECHNIQUE_ID - $TECHNIQUE_NAME"
+echo "[*] MITRE ATT&CK Techniqe: $TECHNIQUE_ID - $TECHNIQUE_NAME"
 
 # Log start time
 START_TIME=$(date "+%Y-%m-%d %H:%M:%S")
