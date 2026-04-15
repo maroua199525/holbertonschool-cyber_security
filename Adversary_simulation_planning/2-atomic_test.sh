@@ -1,5 +1,5 @@
 #!/bin/bash
-TECHNIQUE_ID="T1087.001"
+TECHNIQUE_ID="T1083"
 TECHNIQUE_NAME="Local Account Discovery"
 RESULTS_FILE="atomic_results.txt"
 LOG_FILE="atomic_log.txt"
