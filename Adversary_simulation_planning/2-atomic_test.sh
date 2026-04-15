@@ -1,6 +1,6 @@
 #!/bin/bash
 TECHNIQUE_ID="T1083"
-TECHNIQUE_NAME="Local Account Discovery"
+TECHNIQUE_NAME="File and Directory Discovery"
 RESULTS_FILE="atomic_results.txt"
 LOG_FILE="atomic_log.txt"
 STOP_FLAG="stop_test.flag"
@@ -22,7 +22,9 @@ echo "[$START_TIME] START - $TECHNIQUE_ID - $TECHNIQUE_NAME" >> "$LOG_FILE"
 
 # Run simulation
 echo "Running simulation..."
-cat /etc/passwd > "$RESULTS_FILE"
+find /home -maxdepth 3 2>/dev/null > "$RESULTS_FILE"
+ls -la /tmp >> "$RESULTS_FILE"
+find /etc -maxdepth 1 -type f 2>/dev/null >> "$RESULTS_FILE"
 
 # Log end time
 echo "Output saved to $RESULTS_FILE"
