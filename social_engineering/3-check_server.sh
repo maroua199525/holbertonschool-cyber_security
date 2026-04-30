@@ -9,5 +9,5 @@ if [ "$RESPONSE" != "200" ]; then
 fi
 
 if [ "$RESPONSE" -eq 200 ]; then
-    echo "[+] Server is ready"
+    echo "[] Server is ready"
 fi
